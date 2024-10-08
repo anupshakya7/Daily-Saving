@@ -22,15 +22,17 @@ class SavingController extends Controller
     }
 
     //Deposit
-    public function deposit(Member $member)
+    public function depositwithdraw(Member $member)
     {
-        return view('admin.saving.deposit', compact('member'));
+        $type = request()->query('type');
+        return view('admin.saving.deposit-withdraw', compact('member', 'type'));
     }
 
     //Deposit Store
-    public function depositSubmit(Request $request, Member $member)
+    public function depositwithdrawSubmit(Request $request, Member $member)
     {
         $validator = Validator::make($request->all(), [
+            'type' => 'required|string',
             'deposit' => 'required|integer'
         ]);
 
@@ -38,7 +40,11 @@ class SavingController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $deposit_amount = !empty($member->savings->sum('deposit_balance')) ? ($member->savings->sum('deposit_balance') + $request->deposit) : $request->deposit;
+        if ($request->type == "deposit") {
+            $deposit_amount = !empty($member->savings->sum('deposit_balance')) ? ($member->savings->sum('deposit_balance') + $request->deposit) : $request->deposit;
+        } else {
+            $deposit_amount = !empty($member->savings->sum('deposit_balance')) ? ($member->savings->sum('deposit_balance') - $request->deposit) : $request->deposit;
+        }
 
         $deposit = $member->savings()->update([
             'deposit_balance' => $deposit_amount

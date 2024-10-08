@@ -29,6 +29,6 @@ Route::middleware('check.user')->group(function () {
 
     //Saving
     Route::resource('saving', SavingController::class);
-    Route::get('saving/deposit/{member}', [SavingController::class,'deposit'])->name('saving.deposit');
-    Route::post('saving/deposit/{member}', [SavingController::class,'depositSubmit'])->name('saving.deposit.submit');
+    Route::get('saving/deposit-withdraw/{member}', [SavingController::class,'depositwithdraw'])->name('saving.depositwithdraw');
+    Route::post('saving/deposit-withdraw/{member}', [SavingController::class,'depositwithdrawSubmit'])->name('saving.depositwithdraw.submit');
 });
